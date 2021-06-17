@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container-1">    
+    <div class="contain-head">
+        <h2>MoviFlix is a recommendation system based on Machine Learning</h2>
+        <h4>It gives suggestions based on your previous watchlist</h4>
+    </div>
+    <div class="contain-search"> 
+        <h4>Enter The Movie Name </h4>
+        <form action="{{url_for('predict')}}" method="POST">
+            <input name="movie" type="text" placeholder="&#128269 Title" required="required">
+            <button class="btn-form" type="submit" value="enter">Search&nbsp;  &#8594;</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
