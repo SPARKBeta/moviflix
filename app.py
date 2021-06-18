@@ -3,25 +3,34 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
+#initailze app
 app = Flask(__name__)
 
+#read data file
 df = pd.read_csv('model/movies.csv')
+
+#generalize data
+df['cast'] = df['cast'].str.replace(' ','')
+df['cast'] = df['cast'].str.replace(',',' ')
+df['genre'] = df['genre'].str.replace('&',' ')
 df['genre'] = df['genre'].str.replace(',',' ')
-df['director']=df['director'].str.replace(' ','')
-df['cast']=df['cast'].str.replace(' ','')
-df['cast']=df['cast'].str.replace(',',' ')
-df['title']=df['title'].str.lower()
-df.sort_values(by=('year'),axis=0,inplace=True,ascending=False) 
-df.reset_index(drop=True,inplace=True) 
+df['country'] = df['country'].str.replace(' ','')
+df['country'] = df['country'].str.replace(',',' ')
+df.sort_values(by=('year'),axis=0,inplace=True,ascending=False)
+df.reset_index(drop=True,inplace=True)
 df['year'] = df['year'].astype(str)
-df['features']=df['year']+" "+df['genre']+" "+df['country']+" "+df['cast']
+
+#train features
+df['features'] = df['cast'] +' '+df['description']+' '+df['genre']+' '+df['year']+' '+df['country']
 cv = CountVectorizer()
 count_matrix = cv.fit_transform(df['features'])
 sim = cosine_similarity(count_matrix)
 
+clean_df  = pd.read_csv('model/movies_updated.csv')
+#define function
 def recommender(name):
     name = name.lower()
+    df['title']=df['title'].str.lower()
     if name not in df['title'].unique():
         return ('Try Aboslute Spelling or it may not be in our database')
     else:
@@ -32,7 +41,7 @@ def recommender(name):
         rec_mov = []
         for i in range(len(mov_id)):
             a = mov_id[i][0]
-            rec_mov.append(df['title'][a])
+            rec_mov.append(clean_df['title'][a])
         return rec_mov
 
 @app.route('/', methods=['GET', 'POST'])
@@ -43,7 +52,17 @@ def home():
 def predict():
     movie_name = request.form.get('movie')
     predictions = recommender(movie_name)
-    return render_template('trueReturn.html', predictions=predictions)
-    
+    if type(predictions)==type('str'):
+        return render_template('trueReturn.html',predictions=[''],message=predictions)
+    else :
+        return render_template('trueReturn.html', predictions=predictions,message='')
+#@app.route('/moviecard',methods=['GET','POST'])
+#def moviecard():
+ #   selc_movie = 'after'
+  #  i = clean_df[clean_df['title']==selc_movie]
+  #  values = []
+  #  for index in ['title','genre','rating','year','cast','director', 'country','duration','description']:
+  #     values.append(clean_df[index][4])
+  #   return render_template('movie_card.html',movielist = values)
 if __name__=='__main__':
     app.run(debug=True)

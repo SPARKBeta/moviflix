@@ -1,8 +1,12 @@
 {% extends 'index.html' %}
 {% block content %}
 <div class="container-1">
-    {% for m in predictions %}
-    <p style="color: white;">{{m|capitalize}}</p>
-    {% endfor %}
+    <h2>Here Are Your recommendations</h2>
+    <form class="form-div" action="#" method="POST">
+        <p>{{message}}</p>
+        {% for m in predictions %}
+            <a style="color: white; text-decoration: none;" href="#">{{m}}</a>
+        {% endfor %}
+    </form>
 </div>
 {% endblock %}

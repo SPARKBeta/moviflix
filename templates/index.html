@@ -12,8 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
-        *{
+*{
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
@@ -166,7 +169,7 @@ body,html{
     padding: 5vw;
     position:absolute;
     width: max-content;
-    top: 50%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -199,28 +202,33 @@ body,html{
 }
 .contain-search{
     display: flex;
-    flex-direction: column;
     width: 100%;
-    align-items: flex-end;
+    flex-direction: column;
+}
+.form-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .contain-search h4{
-    padding-top: 13%;
     width: 100%;
     font-weight: lighter;
 }
 .contain-search form{
+
     width: 100%;
 }
 .contain-search input{
     text-align: center;
     text-decoration: none;
     border-radius: 0.3rem;
-    width: 80%;
+    width: 60%;
+    height: min-content;
+    font-size: 1.1rem;
     left: 0%;
-    font-size: 1.3rem;
     border-style: none;
-    padding: 3px;
-
+    padding: 6px 20px 6px 20px;
 }
 .btn-form{
     border: none;
@@ -230,7 +238,6 @@ body,html{
     color: white;
     font-size: 1.1rem;
     text-align: right;
-    margin-top: 10px;
     border-radius: 6px;
     padding: 6px 20px 6px 20px;
 }
@@ -239,7 +246,7 @@ body,html{
         margin-top: 40px;
     }
     .container-1{
-        margin-top: 100px;
+        margin-top: 10%;
     }
 }
 footer{
@@ -255,7 +262,7 @@ footer{
     <div class="nav-div">
         <nav class="nav-bar">
             <div>
-                <a class="logo-link" href="https://moviflixapp.herokuapp.com/">
+                <a class="logo-link" href="/">
                     <img class="logo-img" src="/static/new-logo.001.png" width="120px" alt="">
                 </a>
             </div>
@@ -279,6 +286,23 @@ footer{
         <p>Please give feedback if you like it.</p>
     </footer>
     <script>
+     getData();
+      async function getData(){
+          var data_csv = [];
+          const response = await fetch('/static/titles.csv');
+          const data = await response.text();
+          var rows = data.split('\n').slice(1);
+          data_csv = rows;
+          $( function() {
+              var availableTags = data_csv;
+              $( "#tags" ).autocomplete({
+                  maxResults : 5,
+                  source: function(request, response) {
+                      var results = $.ui.autocomplete.filter(availableTags, request.term);response(results.slice(0, this.options.maxResults));
+                  }
+                });
+            });
+        }
         function loadmenu(){
   var box = document.getElementById('toggler')
   var menu = document.getElementById('menu');

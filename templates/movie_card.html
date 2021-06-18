@@ -1,0 +1,8 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="container-1">
+        {% for i in movielist%}
+        <p style="color: white;">{{i}}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
